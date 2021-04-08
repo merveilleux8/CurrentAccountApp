@@ -3,6 +3,7 @@ using Microsoft.Extensions.Caching.Memory;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace CurrentAccount.Transaction.Service.Impl
 {
@@ -15,7 +16,7 @@ namespace CurrentAccount.Transaction.Service.Impl
             _memoryCache = memoryCache;
         }
 
-        public AccountTransaction AddTransaction(string accountId, double credit)
+        public async Task<AccountTransaction> AddTransaction(string accountId, double credit)
         {
             _memoryCache.TryGetValue("transactions", out Object result);
             var transactions = result as List<AccountTransaction>;
@@ -29,7 +30,7 @@ namespace CurrentAccount.Transaction.Service.Impl
             return transaction;
         }
 
-        public List<AccountTransaction> GetTransactions(string accountId)
+        public async Task<List<AccountTransaction>> GetTransactions(string accountId)
         {
             _memoryCache.TryGetValue("transactions", out Object result);
             var allTransactions = result as List<AccountTransaction>;

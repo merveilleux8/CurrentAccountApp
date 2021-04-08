@@ -9,6 +9,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Text;
+using System.Threading.Tasks;
 using System.Transactions;
 
 namespace CurrentAccount.Account.Service.Impl
@@ -26,7 +27,7 @@ namespace CurrentAccount.Account.Service.Impl
             transactionEndpoint = configuration.GetValue<string>("transactionEndpoint");
         }
 
-        public UserAccount AddAccount(int customerId, double initialCredit)
+        public async Task<UserAccount> AddAccount(int customerId, double initialCredit)
         {
             try
             {
@@ -44,8 +45,9 @@ namespace CurrentAccount.Account.Service.Impl
                     };
                     var client = new HttpClient();
                     var stringContent = new StringContent(JsonConvert.SerializeObject(transaction), Encoding.UTF8, "application/json");
-                    var httpResponse = client.PostAsync(transactionEndpoint, stringContent);
-                    if (httpResponse.Result.StatusCode != HttpStatusCode.OK)
+                    var httpResponse = await client.PostAsync(transactionEndpoint, stringContent);
+
+                    if (httpResponse.StatusCode != HttpStatusCode.OK)
                         throw new ApiException("Account could not be created", System.Net.HttpStatusCode.FailedDependency);
 
                 }
@@ -62,24 +64,25 @@ namespace CurrentAccount.Account.Service.Impl
             }
         }
 
-        public List<UserAccount> GetAccounts()
+        public async Task<List<UserAccount>> GetAccounts(int customerId)
         {
             _memoryCache.TryGetValue("accounts", out Object result);
-            return result as List<UserAccount>;
+            var allAccounts = result as List<UserAccount>;
+            return allAccounts.Where(x => x.CustomerId == customerId).ToList();
         }
 
-        public CustomerAccount GetAccountCustomer(string accountId)
+        public async Task<CustomerAccount> GetAccountCustomer(string accountId)
         {
             _memoryCache.TryGetValue("accounts", out Object result);
             var accounts = result as List<UserAccount>;
             var account = accounts.Where(x => x.AccountId == accountId).FirstOrDefault();
-            var customer = _customerService.GetCustomer(account.CustomerId);
+            var customer = await _customerService.GetCustomer(account.CustomerId);
             var customerAccount = new CustomerAccount() { AccountId = account.AccountId, CustomerId = account.CustomerId, Name = customer.Name, Surname = customer.Surname };
 
             var client = new HttpClient();
-            var httpResponse = client.GetAsync($"{transactionEndpoint}/{accountId}");
-            var content = httpResponse.Result.Content.ReadAsStringAsync();
-            customerAccount.Transactions = JsonConvert.DeserializeObject<List<AccountTransaction>>(content.Result);
+            var httpResponse = await client.GetAsync($"{transactionEndpoint}/{accountId}");
+            var content = await httpResponse.Content.ReadAsStringAsync();
+            customerAccount.Transactions = JsonConvert.DeserializeObject<List<AccountTransaction>>(content);
             customerAccount.Transactions.ForEach(x => customerAccount.Balance += x.Credit);
 
             return customerAccount;

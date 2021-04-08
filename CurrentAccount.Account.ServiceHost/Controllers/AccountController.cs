@@ -3,6 +3,7 @@ using CurrentAccount.Account.Service.Exceptions;
 using CurrentAccount.Account.ServiceHost.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
+using System.Threading.Tasks;
 
 namespace CurrentAccount.Account.ServiceHost.Controllers
 {
@@ -21,27 +22,28 @@ namespace CurrentAccount.Account.ServiceHost.Controllers
 
         // GET: api/<AccountController>
         [HttpGet]
-        public ActionResult Get()
+        [Route("get/{customerId}", Name = "GetByCustomerId")]
+        public async Task<ActionResult> GetByCustomerId(int customerId)
         {
-            var result = _accountService.GetAccounts();
+            var result = await _accountService.GetAccounts(customerId);
             return Ok(result);
         }
 
         // GET api/<AccountController>/5
         [HttpGet("{accountId}")]
-        public ActionResult Get(string accountId)
+        public async Task<ActionResult> Get(string accountId)
         {
-            var customerAccount = _accountService.GetAccountCustomer(accountId);
+            var customerAccount = await _accountService.GetAccountCustomer(accountId);
             return Ok(customerAccount);
         }
 
         // POST api/<AccountController>
         [HttpPost]
-        public ActionResult Post([FromBody] CreateAccountModel createAccountModel)
-        {
-            if (!_customerService.CheckIfCustomerExists(createAccountModel.CustomerId))
+        public async Task<ActionResult> Post([FromBody] CreateAccountModel createAccountModel)
+        { bool isCustomerExists = await _customerService.CheckIfCustomerExists(createAccountModel.CustomerId);
+            if (!isCustomerExists)
                 throw new ApiException("Customer could not be found.", HttpStatusCode.BadRequest);
-            var result = _accountService.AddAccount(createAccountModel.CustomerId, createAccountModel.InitialCredit);
+            var result = await _accountService.AddAccount(createAccountModel.CustomerId, createAccountModel.InitialCredit);
             return Ok(result);
         }
     }

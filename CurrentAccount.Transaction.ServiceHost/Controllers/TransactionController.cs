@@ -23,17 +23,17 @@ namespace CurrentAccount.Transaction.ServiceHost.Controllers
         }
         // GET api/<TransactionController>/5
         [HttpGet("{accountId}")]
-        public ActionResult Get(string accountId)
+        public async Task<ActionResult> Get(string accountId)
         {
-            var transactionList = _transactionService.GetTransactions(accountId);
+            var transactionList = await _transactionService.GetTransactions(accountId);
             return Ok(transactionList);
         }
 
         // POST api/<TransactionController>
         [HttpPost]
-        public ActionResult Post([FromBody] CreateTransactionModel transaction)
+        public async Task<ActionResult> Post([FromBody] CreateTransactionModel transaction)
         {
-            var accountTransaction = _transactionService.AddTransaction(transaction.AccountId, transaction.Credit);
+            var accountTransaction = await _transactionService.AddTransaction(transaction.AccountId, transaction.Credit);
             return Ok(accountTransaction);
         }
     }
