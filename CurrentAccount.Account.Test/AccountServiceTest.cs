@@ -1,8 +1,8 @@
 using NUnit.Framework;
 
-namespace CurrentAccount.Transaction.Test
+namespace CurrentAccount.Account.Test
 {
-    public class Tests
+    public class AccountServiceTest
     {
         [SetUp]
         public void Setup()

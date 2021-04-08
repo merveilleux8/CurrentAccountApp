@@ -31,7 +31,7 @@ namespace CurrentAccount.Transaction.ServiceHost.Controllers
 
         // POST api/<TransactionController>
         [HttpPost]
-        public async Task<ActionResult> Post([FromBody] CreateTransactionModel transaction)
+        public async Task<ActionResult> CreateTransaction([FromBody] CreateTransactionModel transaction)
         {
             var accountTransaction = await _transactionService.AddTransaction(transaction.AccountId, transaction.Credit);
             return Ok(accountTransaction);

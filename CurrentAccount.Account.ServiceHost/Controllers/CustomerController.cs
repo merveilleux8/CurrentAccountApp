@@ -22,7 +22,7 @@ namespace CurrentAccount.Account.ServiceHost.Controllers
         }
         // GET: api/<CustomerController>
         [HttpGet]
-        public async Task<ActionResult> Get()
+        public async Task<ActionResult> GetCustomer()
         {
             return Ok(await _customerService.GetCustomers());
         }

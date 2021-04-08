@@ -39,7 +39,7 @@ namespace CurrentAccount.Account.ServiceHost.Controllers
 
         // POST api/<AccountController>
         [HttpPost]
-        public async Task<ActionResult> Post([FromBody] CreateAccountModel createAccountModel)
+        public async Task<ActionResult> CreateAccount([FromBody] CreateAccountModel createAccountModel)
         { bool isCustomerExists = await _customerService.CheckIfCustomerExists(createAccountModel.CustomerId);
             if (!isCustomerExists)
                 throw new ApiException("Customer could not be found.", HttpStatusCode.BadRequest);

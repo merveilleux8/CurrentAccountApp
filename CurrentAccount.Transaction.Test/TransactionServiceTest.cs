@@ -1,8 +1,11 @@
-using NUnit.Framework;
+﻿using NUnit.Framework;
+using System;
+using System.Collections.Generic;
+using System.Text;
 
-namespace CurrentAccount.Account.Test
+namespace CurrentAccount.Transaction.Test
 {
-    public class Tests
+    class TransactionServiceTest
     {
         [SetUp]
         public void Setup()
