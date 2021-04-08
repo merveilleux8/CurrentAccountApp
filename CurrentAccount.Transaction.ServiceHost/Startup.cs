@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using CurrentAccount.Transaction.Service;
 using CurrentAccount.Transaction.Service.Impl;
 using CurrentAccount.Transaction.Service.Models;
+using CurrentAccount.Transaction.ServiceHost.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -41,6 +42,7 @@ namespace CurrentAccount.Transaction.ServiceHost
             {
                 app.UseDeveloperExceptionPage();
             }
+            app.ConfigureExceptionHandler();
 
             app.UseHttpsRedirection();
 
@@ -48,7 +50,6 @@ namespace CurrentAccount.Transaction.ServiceHost
 
             app.UseAuthorization();
 
-            app.ConfigureExceptionHandler();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();

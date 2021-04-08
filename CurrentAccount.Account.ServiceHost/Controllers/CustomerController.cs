@@ -24,7 +24,6 @@ namespace CurrentAccount.Account.ServiceHost.Controllers
         [HttpGet]
         public ActionResult Get()
         {
-            throw new ApiException("asddas",System.Net.HttpStatusCode.NotFound);
             return Ok(_customerService.GetCustomers());
         }
     }

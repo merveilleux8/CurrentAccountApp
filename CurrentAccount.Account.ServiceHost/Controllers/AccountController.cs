@@ -1,4 +1,5 @@
 ﻿using CurrentAccount.Account.Service;
+using CurrentAccount.Account.Service.Exceptions;
 using CurrentAccount.Account.ServiceHost.Models;
 using Microsoft.AspNetCore.Mvc;
 
