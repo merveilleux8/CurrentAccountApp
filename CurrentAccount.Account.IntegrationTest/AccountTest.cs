@@ -34,7 +34,7 @@ namespace CurrentAccount.Account.IntegrationTest
             account.Should().NotBeNull();
             response.StatusCode.Should().Be(HttpStatusCode.OK);
         }
-
+        [Obsolete]
         [Fact]
         public async Task CreateAccount_should_return_account_with_transactions()
         {

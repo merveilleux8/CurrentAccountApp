@@ -33,6 +33,7 @@ namespace CurrentAccount.Transaction.ServiceHost
             services.AddMemoryCache();
             services.AddScoped<ITransactionService, TransactionService>();
             services.AddControllers();
+            services.AddSwaggerGen();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -53,6 +54,11 @@ namespace CurrentAccount.Transaction.ServiceHost
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+            });
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "CurrentAccount Transaction API");
             });
             //customer setup
             var entryOptions = new MemoryCacheEntryOptions().SetPriority(CacheItemPriority.NeverRemove);

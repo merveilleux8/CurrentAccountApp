@@ -35,6 +35,7 @@ namespace CurrentAccount.Account.ServiceHost
             services.AddScoped<IAccountService, AccountService>();
             services.AddScoped<ICustomerService, CustomerService>();
             services.AddControllers();
+            services.AddSwaggerGen();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -44,7 +45,11 @@ namespace CurrentAccount.Account.ServiceHost
             {
                 app.UseDeveloperExceptionPage();
             }
-
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "CurrentAccount Account API");
+            });
             app.ConfigureExceptionHandler();
             app.UseHttpsRedirection();
 
@@ -73,6 +78,7 @@ namespace CurrentAccount.Account.ServiceHost
             };
             memoryCache.Set("customers", customers, entryOptions);
             memoryCache.Set("accounts", new List<UserAccount>(), entryOptions);
+
         }
     }
 }
