@@ -2,7 +2,7 @@
 using CurrentAccount.Account.Service.Exceptions;
 using CurrentAccount.Account.ServiceHost.Models;
 using Microsoft.AspNetCore.Mvc;
-
+using System.Net;
 
 namespace CurrentAccount.Account.ServiceHost.Controllers
 {
@@ -28,10 +28,10 @@ namespace CurrentAccount.Account.ServiceHost.Controllers
         }
 
         // GET api/<AccountController>/5
-        [HttpGet("{id}")]
-        public ActionResult Get(int customerId)
+        [HttpGet("{accountId}")]
+        public ActionResult Get(string accountId)
         {
-            var customerAccount = _accountService.GetAccountCustomer(customerId);
+            var customerAccount = _accountService.GetAccountCustomer(accountId);
             return Ok(customerAccount);
         }
 
@@ -39,10 +39,8 @@ namespace CurrentAccount.Account.ServiceHost.Controllers
         [HttpPost]
         public ActionResult Post([FromBody] CreateAccountModel createAccountModel)
         {
-            if(!_customerService.CheckIfCustomerExists(createAccountModel.CustomerId))
-            {
-                return BadRequest("Customer could not be found.");
-            }
+            if (!_customerService.CheckIfCustomerExists(createAccountModel.CustomerId))
+                throw new ApiException("Customer could not be found.", HttpStatusCode.BadRequest);
             var result = _accountService.AddAccount(createAccountModel.CustomerId, createAccountModel.InitialCredit);
             return Ok(result);
         }

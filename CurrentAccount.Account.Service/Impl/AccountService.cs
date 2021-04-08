@@ -46,7 +46,7 @@ namespace CurrentAccount.Account.Service.Impl
                     var stringContent = new StringContent(JsonConvert.SerializeObject(transaction), Encoding.UTF8, "application/json");
                     var httpResponse = client.PostAsync(transactionEndpoint, stringContent);
                     if (httpResponse.Result.StatusCode != HttpStatusCode.OK)
-                        throw ApiException("Account could not be created", System.Net.HttpStatusCode.FailedDependency);
+                        throw new ApiException("Account could not be created", System.Net.HttpStatusCode.FailedDependency);
 
                 }
                 _memoryCache.TryGetValue("accounts", out Object result);
@@ -62,24 +62,26 @@ namespace CurrentAccount.Account.Service.Impl
             }
         }
 
-        private Exception ApiException(string v, HttpStatusCode failedDependency)
-        {
-            throw new NotImplementedException();
-        }
-
         public List<UserAccount> GetAccounts()
         {
             _memoryCache.TryGetValue("accounts", out Object result);
             return result as List<UserAccount>;
         }
 
-        public CustomerAccount GetAccountCustomer(int customerId)
+        public CustomerAccount GetAccountCustomer(string accountId)
         {
             _memoryCache.TryGetValue("accounts", out Object result);
             var accounts = result as List<UserAccount>;
-            var account = accounts.Where(x => x.CustomerId == customerId).FirstOrDefault();
-            var customer = _customerService.GetCustomer(customerId);
-            var customerAccount = new CustomerAccount() { AccountId = account.AccountId, CustomerId = customerId, Name = customer.Name, Surname = customer.Surname };
+            var account = accounts.Where(x => x.AccountId == accountId).FirstOrDefault();
+            var customer = _customerService.GetCustomer(account.CustomerId);
+            var customerAccount = new CustomerAccount() { AccountId = account.AccountId, CustomerId = account.CustomerId, Name = customer.Name, Surname = customer.Surname };
+
+            var client = new HttpClient();
+            var httpResponse = client.GetAsync($"{transactionEndpoint}/{accountId}");
+            var content = httpResponse.Result.Content.ReadAsStringAsync();
+            customerAccount.Transactions = JsonConvert.DeserializeObject<List<AccountTransaction>>(content.Result);
+            customerAccount.Transactions.ForEach(x => customerAccount.Balance += x.Credit);
+
             return customerAccount;
         }
 

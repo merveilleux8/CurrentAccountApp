@@ -22,7 +22,7 @@ namespace CurrentAccount.Transaction.ServiceHost.Controllers
             _transactionService = transactionService;
         }
         // GET api/<TransactionController>/5
-        [HttpGet("{id}")]
+        [HttpGet("{accountId}")]
         public ActionResult Get(string accountId)
         {
             var transactionList = _transactionService.GetTransactions(accountId);

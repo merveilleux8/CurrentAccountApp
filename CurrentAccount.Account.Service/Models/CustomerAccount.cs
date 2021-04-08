@@ -10,5 +10,7 @@ namespace CurrentAccount.Account.Service.Models
         public string Name { get; set; }
         public string Surname { get; set; }
         public string AccountId { get; set; }
+        public double Balance { get; set; }
+        public List<AccountTransaction> Transactions { get; set; }
     }
 }

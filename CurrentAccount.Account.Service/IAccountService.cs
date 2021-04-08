@@ -7,6 +7,6 @@ namespace CurrentAccount.Account.Service
     {
         UserAccount AddAccount(int customerId, double initialCredit);
         List<UserAccount> GetAccounts();
-        CustomerAccount GetAccountCustomer(int customerId);
+        CustomerAccount GetAccountCustomer(string accountId);
     }
 }
